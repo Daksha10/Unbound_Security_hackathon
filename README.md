@@ -111,6 +111,6 @@ By default, the Flask backend will run on `http://127.0.0.1:5000/`.
 ---
 
 ## 🎥 Demo Video  
-📌 [Click here to watch the demo](#https://loom.com/share/folder/7c6cddf064884ccdb4f89e6d07a86f28) 
+📌 [Click here to watch the demo](https://loom.com/share/folder/7c6cddf064884ccdb4f89e6d07a86f28) 
 
 --- 
