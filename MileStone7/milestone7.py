@@ -70,7 +70,7 @@ def get_db_connection():
         print(f"[ERROR] Database Connection Failed: {e}")
         return None  # Prevent crashes if DB is unreachable
 
-@app.route("/file-routing", methods=["POST"])
+@app.route("/api/file-routing", methods=["POST"])
 def add_file_routing():
     try:
         # Parse JSON request data
@@ -115,7 +115,7 @@ def add_file_routing():
             conn.close()
         return jsonify({"error": str(e)}), 500  # Internal Server Error
 
-@app.route("/file-routing", methods=["GET"])
+@app.route("/api/file-routing", methods=["GET"])
 def get_file_routing():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -126,7 +126,7 @@ def get_file_routing():
 
     return jsonify([{"file_extension": r[0], "provider": r[1], "model": r[2]} for r in rules])
 
-@app.route("/file-routing/<file_extension>", methods=["DELETE"])
+@app.route("/api/file-routing/<file_extension>", methods=["DELETE"])
 def delete_file_routing(file_extension):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -134,8 +134,8 @@ def delete_file_routing(file_extension):
     conn.commit()
     cursor.close()
     conn.close()
-
     return jsonify({"message": f"Routing policy for {file_extension} deleted successfully"}), 200
+
 
 
 # Function to determine redirect model based on regex rules
@@ -215,6 +215,17 @@ def update_regex_rule(rule_id):
     conn.close()
     return jsonify({"message": "Rule updated successfully"})
 
+# Delete a regex rule
+@app.route('/api/regex-rules/<int:rule_id>', methods=['DELETE'])
+def delete_regex_rule(rule_id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM routing_rules WHERE id=%s;", (rule_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"message": "Rule deleted successfully"})
+
 # API to fetch unique providers
 @app.route('/providers', methods=['GET'])
 def get_providers():
@@ -235,17 +246,6 @@ def get_models():
     model_list = [{"provider": model.provider, "name": model.name} for model in models]
     return jsonify(model_list)
 
-
-# Delete a regex rule
-@app.route('/api/regex-rules/<int:rule_id>', methods=['DELETE'])
-def delete_regex_rule(rule_id):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("DELETE FROM routing_rules WHERE id=%s;", (rule_id,))
-    conn.commit()
-    cur.close()
-    conn.close()
-    return jsonify({"message": "Rule deleted successfully"})
 
 # Admin Panel Route
 @app.route('/admin')
