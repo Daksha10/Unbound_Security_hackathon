@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Regex Policies</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        .container { max-width: 800px; margin: auto; }
+        button { padding: 8px 12px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Panel - Regex Routing Rules</h2>
+
+        <h3>Add New Rule</h3>
+        <input type="text" id="regex_pattern" placeholder="Regex Pattern">
+        <input type="text" id="original_model" placeholder="Original Model">
+        <input type="text" id="redirect_model" placeholder="Redirect Model">
+        <button onclick="addRule()">Add Rule</button>
+
+        <h3>Existing Rules</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Regex Pattern</th>
+                    <th>Original Model</th>
+                    <th>Redirect Model</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="rulesTable"></tbody>
+        </table>
+    </div>
+    <h2>Manage File Routing</h2>
+    <table>
+        <tr>
+            <th>File Type</th>
+            <th>Provider</th>
+            <th>Model</th>
+            <th>Action</th>
+        </tr>
+        <tbody id="file-routing-table"></tbody>
+    </table>
+    <form id="file-routing-form">
+        <input type="text" id="file-extension" placeholder="Enter file type (e.g., pdf)">
+        <input type="text" id="provider" placeholder="Enter provider (e.g., anthropic)">
+        <input type="text" id="model" placeholder="Enter model (e.g., claude-v1)">
+        <button type="submit">Add/Update</button>
+    </form>
+    <script>
+        function fetchRules() {
+            $.get("/api/regex-rules", function(data) {
+                let rows = "";
+                data.forEach(rule => {
+                    rows += `
+                        <tr>
+                            <td>${rule[0]}</td>
+                            <td><input type="text" value="${rule[1]}" id="regex-${rule[0]}"></td>
+                            <td><input type="text" value="${rule[2]}" id="model-${rule[0]}"></td>
+                            <td><input type="text" value="${rule[3]}" id="redirect-${rule[0]}"></td>
+                            <td>
+                                <button onclick="updateRule(${rule[0]})">Update</button>
+                                <button onclick="deleteRule(${rule[0]})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                $("#rulesTable").html(rows);
+            });
+        }
+
+        function addRule() {
+            const original_model = $("#original_model").val();
+            const regex_pattern = $("#regex_pattern").val();
+            const redirect_model = $("#redirect_model").val();
+        
+            $.ajax({
+                url: "/api/regex-rules",
+                type: "POST",
+                contentType: "application/json",  // 🔹 Set Content-Type for JSON
+                data: JSON.stringify({ original_model, regex_pattern, redirect_model }),
+                success: function(response) {
+                    alert(response.message);
+                    fetchRules(); // Refresh the list after adding
+                },
+                error: function(xhr) {
+                    alert("Error: " + xhr.responseJSON.error);
+                }
+            });
+        }
+        
+
+        function updateRule(id) {
+            const original_model = $(`#model-${id}`).val();
+            const regex_pattern = $(`#regex-${id}`).val();
+            const redirect_model = $(`#redirect-${id}`).val();
+
+            $.ajax({
+                url: `/api/regex-rules/${id}`,
+                type: "PUT",
+                data: JSON.stringify({ original_model, regex_pattern, redirect_model }),
+                contentType: "application/json",
+                success: function(response) {
+                    alert(response.message);
+                    fetchRules();
+                }
+            });
+        }
+
+        function deleteRule(id) {
+            if (confirm("Are you sure you want to delete this rule?")) {
+                $.ajax({
+                    url: `/api/regex-rules/${id}`,
+                    type: "DELETE",
+                    success: function(response) {
+                        alert(response.message);
+                        fetchRules();
+                    }
+                });
+            }
+        }
+
+        // Load rules when the page loads
+        $(document).ready(fetchRules);
+
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/file-routing")
+                .then(res => res.json())
+                .then(data => {
+                    let table = document.getElementById("file-routing-table");
+                    data.forEach(rule => {
+                        let row = document.createElement("tr");
+                        row.innerHTML = `<td>${rule.file_extension}</td>
+                                         <td>${rule.provider}</td>
+                                         <td>${rule.model}</td>
+                                         <td><button onclick="deleteRule('${rule.file_extension}')">Delete</button></td>`;
+                        table.appendChild(row);
+                    });
+                });
+    
+            function deleteRule(fileType) {
+                fetch(`/file-routing/${fileType}`, { method: "DELETE" })
+                    .then(() => location.reload());
+            }
+    
+            document.getElementById("file-routing-form").addEventListener("submit", function (e) {
+                e.preventDefault(); // Prevent form submission
+    
+                let fileType = document.getElementById("file-extension").value;
+                let provider = document.getElementById("provider").value;
+                let model = document.getElementById("model").value;
+    
+                fetch("/file-routing", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ file_extension: fileType, provider: provider, model: model })
+                })
+                .then(response => response.json()) // Parse JSON response
+                .then(data => {
+                    console.log("Success:", data);
+                    location.reload(); // Refresh the page
+                })
+                .catch(error => console.error("Error:", error));
+            }); 
+        });
+    </script>
+    
+</body>
+</html>
