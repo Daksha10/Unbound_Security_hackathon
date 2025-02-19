@@ -1,7 +1,7 @@
 # 🚀 Unbound Chat Routing System  
 
 ## 📌 Overview  
-This project is a **smart AI-powered chat routing system** that dynamically directs user queries to different **LLM (Large Language Model) providers** based on **regex-based routing rules** stored in a PostgreSQL database. It features:  
+This project is a **smart chat routing system** that dynamically directs user queries to different **LLM (Large Language Model(stub LLMs)) providers** based on **regex-based routing rules** stored in a PostgreSQL database. It features:  
 ✅ **Regex-based Routing** – Dynamically reroute prompts based on patterns.  
 ✅ **Admin Portal** – Manage regex rules via a web UI.  
 ✅ **File Upload Handling** – Process PDF uploads with special routing policies.  
