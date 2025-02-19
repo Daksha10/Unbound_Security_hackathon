@@ -34,15 +34,15 @@ This project is a **smart AI-powered chat routing system** that dynamically dire
 │  🚀 Flask Backend                  │
 │  - Routes requests                 │
 │  - Applies regex-based routing     │
-│  - Interacts with PostgreSQL        │
-│  - Connects to LLM providers        │
+│  - Interacts with PostgreSQL       │
+│  - Connects to LLM providers       │
 └───────────────┬────────────────────┘
                 │
                 ▼
 ┌────────────────────────────────────┐
-│  🗄️ PostgreSQL Database             │
-│  - Stores regex-based routing rules │
-│  - Maps models & special policies   │
+│  🗄️ PostgreSQL Database            │
+│  - Stores regex-based routing rules│
+│  - Maps models & special policies  │
 └───────────────-────────────────────┘
 ```
 
