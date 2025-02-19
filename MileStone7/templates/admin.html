@@ -12,11 +12,39 @@
         th { background-color: #f4f4f4; }
         .container { max-width: 800px; margin: auto; }
         button { padding: 8px 12px; cursor: pointer; }
+        /* Style for the second table */
+        #file-routing-table {
+            width: 60%; /* Adjust width to make it smaller */
+            margin-top: 15px;
+            border-collapse: collapse;
+            font-size: 14px; /* Reduce font size */
+        }
+
+        /* Reduce padding for table cells */
+        #file-routing-table th, 
+        #file-routing-table td {
+            padding: 5px 10px;
+            text-align: center;
+        }
+
+        /* Adjust input field size */
+        #file-routing-table input {
+            width: 80px;
+            padding: 4px;
+            font-size: 12px;
+        }
+
+        /* Make action buttons smaller */
+        #file-routing-table button {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Admin Panel - Regex Routing Rules</h2>
+        <h1><center>Admin Portal</center></h1>
+        <h2>Regex Routing Rules</h2>
 
         <h3>Add New Rule</h3>
         <input type="text" id="regex_pattern" placeholder="Regex Pattern">
@@ -39,6 +67,14 @@
         </table>
     </div>
     <h2>Manage File Routing</h2>
+    <h3>Add new File Routing Policy</h3>
+    <form id="file-routing-form">
+        <input type="text" id="file-extension" placeholder="Enter file type (e.g., pdf)">
+        <input type="text" id="provider" placeholder="Enter provider (e.g., anthropic)">
+        <input type="text" id="model" placeholder="Enter model (e.g., claude-v1)">
+        <button type="submit">Add/Update</button>
+    </form>
+    <h3>Existing Rules</h3>
     <table>
         <tr>
             <th>File Type</th>
@@ -48,12 +84,7 @@
         </tr>
         <tbody id="file-routing-table"></tbody>
     </table>
-    <form id="file-routing-form">
-        <input type="text" id="file-extension" placeholder="Enter file type (e.g., pdf)">
-        <input type="text" id="provider" placeholder="Enter provider (e.g., anthropic)">
-        <input type="text" id="model" placeholder="Enter model (e.g., claude-v1)">
-        <button type="submit">Add/Update</button>
-    </form>
+    
     <script>
         function fetchRules() {
             $.get("/api/regex-rules", function(data) {

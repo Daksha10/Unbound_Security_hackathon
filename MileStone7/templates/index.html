@@ -4,38 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat UI</title>
-    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
         <h2>Chat with AI</h2>
         
-        <label for="provider">Select Provider:</label>
-        <select id="provider">
-            <option value="" disabled selected>Select a provider</option>
-        </select>
+        <div class="form-group">
+            <label for="provider">Select Provider:</label>
+            <select id="provider">
+                <option value="" disabled selected>Select a provider</option>
+            </select>
+        </div>
         <br><br>
-        <label for="model">Select Model:</label>
-        <select id="model">
-            <option value="" disabled selected>Select a model</option>
-        </select>
+        <div class="form-group">
+            <label for="model">Select Model:</label>
+            <select id="model">
+                <option value="" disabled selected>Select a model</option>
+            </select>
+        </div>
         <br><br>
-        <label for="prompt">Enter Prompt:</label>
-        <textarea id="prompt" placeholder="Type your prompt"></textarea>
+        <div class="form-group">
+            <label for="prompt">Enter Prompt:</label>
+            <textarea id="prompt" placeholder="Type your prompt..."></textarea>
+        </div>
         <br><br>
-        <label for="file">Upload File:</label>
-        <input type="file" id="file" accept=".pdf,.txt,.docx">
+        <div class="form-group">
+            <label for="file">Upload File:</label>
+            <input type="file" id="file" accept=".pdf,.txt,.docx">
+        </div>
         <br><br>
         <button id="submit">Send</button>
 
-        <div class="reroute-message">
+        <div class="response-section">
             <h3>Reroute Status:</h3>
-            <p id="reroute-status"></p>
+            <p id="reroute-status">No rerouting applied.</p>
         </div>
 
-        <div class="response-container">
+        <div class="response-section">
             <h3>Response:</h3>
-            <p id="response"></p>
+            <p id="response"><em>Waiting for response...</em></p>
         </div>
     </div>
 

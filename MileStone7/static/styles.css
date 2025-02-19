@@ -1,69 +1,100 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: rgb(247, 248, 248);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
     margin: 0;
-    padding: 0;
-    text-align: center;
 }
 
 .container {
-    max-width: 600px;
-    background: white;
+    width: 420px;
+    background: rgb(104, 202, 171);
     padding: 20px;
-    margin: 30px auto;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
 }
 
 h2 {
     color: #333;
 }
 
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
 label {
     font-weight: bold;
     display: block;
-    margin-top: 10px;
+    margin-bottom: 5px;
 }
 
-select, textarea, input[type="file"] {
+input, select, textarea {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
+    padding: 10px;
+    border: 1px solid #ddd;
     border-radius: 5px;
+}
+
+textarea {
+    resize: none;
+    height: 60px;
+}
+
+.upload-box {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #fafafa;
+}
+
+.upload-box:hover {
+    border-color: #007bff;
 }
 
 button {
-    background: #007bff;
+    width: 100%;
+    background-color: #284ca7;
     color: white;
+    padding: 10px;
     border: none;
-    padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px;
-    width: 100%;
     font-size: 16px;
 }
 
 button:hover {
-    background: #0056b3;
+    background-color: #21887f;
 }
 
-.response-container, .reroute-message {
-    background: #e9ecef;
+.status-box, .response-box {
+    background: #f4f4f4;
     padding: 10px;
-    margin-top: 20px;
     border-radius: 5px;
+    margin-top: 10px;
 }
 
 .admin-link {
-    display: inline-block;
-    margin-top: 15px;
-    color: #6c63ff;
-    text-decoration: none;
+    display: block;
+    margin-top: 20px;
+    padding: 12px;
+    text-align: center;
+    background-color: #007bff;
+    color: white;
     font-weight: bold;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s ease;
 }
 
 .admin-link:hover {
-    text-decoration: underline;
+    background-color: #0056b3;
+    text-decoration: none;
 }
+
