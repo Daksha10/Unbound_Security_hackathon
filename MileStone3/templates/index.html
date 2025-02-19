@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query-Based Model Routing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Query-Based Model Routing</h2>
+        <form id="query-form">
+            <label for="model">Select Model:</label>
+            <select id="model" name="model">
+                <option value="gpt-4o">GPT-4o</option>
+                <option value="gemini-alpha">Gemini Alpha</option>
+                <option value="med-gpt">Med-GPT</option>
+                <option value="financial-gpt">Financial-GPT</option>
+                <option value="bard">Bard</option>
+            </select>
+
+            <label for="query">Enter Query:</label>
+            <input type="text" id="query" name="query" placeholder="Type your question..." required>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <div id="response"></div>
+    </div>
+
+    <script>
+        document.getElementById("query-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            let formData = {
+                "prompt": document.getElementById("query").value,
+                "model": document.getElementById("model").value
+            };
+
+            fetch("/route_prompt", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("response").innerHTML = `<p><strong>Query:</strong> ${data.query}</p>
+                                                                <p><strong>Original Model:</strong> ${data.original_model}</p>
+                                                                <p><strong>Final Model:</strong> ${data.final_model}</p>
+                                                                <p><strong>${data.message}</strong></p>`;
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+</body>
+</html>
