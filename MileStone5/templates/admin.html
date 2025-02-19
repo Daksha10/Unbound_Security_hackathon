@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Regex Policies</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        .container { max-width: 800px; margin: auto; }
+        button { padding: 8px 12px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Panel - Regex Routing Rules</h2>
+
+        <h3>Add New Rule</h3>
+        <input type="text" id="regex_pattern" placeholder="Regex Pattern">
+        <input type="text" id="original_model" placeholder="Original Model">
+        <input type="text" id="redirect_model" placeholder="Redirect Model">
+        <button onclick="addRule()">Add Rule</button>
+
+        <h3>Existing Rules</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Regex Pattern</th>
+                    <th>Original Model</th>
+                    <th>Redirect Model</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="rulesTable"></tbody>
+        </table>
+    </div>
+
+    <script>
+        function fetchRules() {
+            $.get("/api/regex-rules", function(data) {
+                let rows = "";
+                data.forEach(rule => {
+                    rows += `
+                        <tr>
+                            <td>${rule[0]}</td>
+                            <td><input type="text" value="${rule[1]}" id="regex-${rule[0]}"></td>
+                            <td><input type="text" value="${rule[2]}" id="model-${rule[0]}"></td>
+                            <td><input type="text" value="${rule[3]}" id="redirect-${rule[0]}"></td>
+                            <td>
+                                <button onclick="updateRule(${rule[0]})">Update</button>
+                                <button onclick="deleteRule(${rule[0]})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                $("#rulesTable").html(rows);
+            });
+        }
+
+        function addRule() {
+            const original_model = $("#original_model").val();
+            const regex_pattern = $("#regex_pattern").val();
+            const redirect_model = $("#redirect_model").val();
+        
+            $.ajax({
+                url: "/api/regex-rules",
+                type: "POST",
+                contentType: "application/json",  // 🔹 Set Content-Type for JSON
+                data: JSON.stringify({ original_model, regex_pattern, redirect_model }),
+                success: function(response) {
+                    alert(response.message);
+                    fetchRules(); // Refresh the list after adding
+                },
+                error: function(xhr) {
+                    alert("Error: " + xhr.responseJSON.error);
+                }
+            });
+        }
+        
+
+        function updateRule(id) {
+            const original_model = $(`#model-${id}`).val();
+            const regex_pattern = $(`#regex-${id}`).val();
+            const redirect_model = $(`#redirect-${id}`).val();
+
+            $.ajax({
+                url: `/api/regex-rules/${id}`,
+                type: "PUT",
+                data: JSON.stringify({ original_model, regex_pattern, redirect_model }),
+                contentType: "application/json",
+                success: function(response) {
+                    alert(response.message);
+                    fetchRules();
+                }
+            });
+        }
+
+        function deleteRule(id) {
+            if (confirm("Are you sure you want to delete this rule?")) {
+                $.ajax({
+                    url: `/api/regex-rules/${id}`,
+                    type: "DELETE",
+                    success: function(response) {
+                        alert(response.message);
+                        fetchRules();
+                    }
+                });
+            }
+        }
+
+        // Load rules when the page loads
+        $(document).ready(fetchRules);
+    </script>
+</body>
+</html>
